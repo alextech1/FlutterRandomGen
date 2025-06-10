@@ -25,17 +25,40 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Random Generator')),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          debugPrint('FAB');
-        },
-        child: const Icon(Icons.add),
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: const Text('Random Generator'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text('Number Generated:'),
+            Text('$_counter',
+            style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            
+            TextButton(
+          style: ButtonStyle(
+            foregroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+          ),
+          onPressed: _incrementCounter,
+          child: Text('Generate Numbers'),
+        ),
+            ],
+        ),
       ),
     );
   }
 }
-//15:50
