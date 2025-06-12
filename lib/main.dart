@@ -1,3 +1,6 @@
+import 'dart:math';
+import 'package:collection/collection.dart';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -25,13 +28,48 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
-  int _counter = 0;
+  List<Set<int>> listOfSets = <Set<int>>[];
 
-  void _incrementCounter() {
+  final int nElementsWithMax = 69;
+  final int kTaken = 6;
+  final int requiredResults = 3;
+  
+
+  Set<int> randomNumber = {0}; // Initialize with a default value
+  final random = Random();
+
+  void generateRandomNumber() {
     setState(() {
-      _counter++;
+      randomNumber.add(random.nextInt(69)); // Or your desired range
     });
   }
+
+  void generateListOfRandomNumbers() {
+    for (int i = 0; i < requiredResults; i++) {
+      bool isInList = false;
+      Set<int> anewSet;
+      do {
+        anewSet = Set.of(listRandom(nElementsWithMax, kTaken));
+        isInList = listOfSets.firstWhereOrNull((x) => anewSet.intersection(x).length == anewSet.length) != null;
+      } while (isInList);
+      setState(() {listOfSets.add(anewSet);});       
+    }
+  }
+
+List<int> listRandom(int maxNumber, int numberOfGenerations) {
+
+  final random = Random();
+  var currentOptions = List<int>.generate(maxNumber, (i) => i);
+
+  var list = List.generate(numberOfGenerations, (_) {
+    final index = random.nextInt(currentOptions.length);
+    final result = currentOptions[index];
+    currentOptions.removeAt(index);    
+    return result;
+  });
+  return list;
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -45,18 +83,19 @@ class _RootPageState extends State<RootPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text('Number Generated:'),
-            Text('$_counter',
-            style: Theme.of(context).textTheme.headlineMedium,
+            Text(
+              listOfSets.toString(),
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
-            
+
             TextButton(
-          style: ButtonStyle(
-            foregroundColor: WidgetStateProperty.all<Color>(Colors.blue),
-          ),
-          onPressed: _incrementCounter,
-          child: Text('Generate Numbers'),
-        ),
-            ],
+              style: ButtonStyle(
+                foregroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+              ),
+              onPressed: generateListOfRandomNumbers,
+              child: Text('Generate Numbers'),
+            ),
+          ],
         ),
       ),
     );
